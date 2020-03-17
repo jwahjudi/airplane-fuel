@@ -19,5 +19,6 @@ from django.contrib import admin
 
 urlpatterns = [
 	path('', include('airplane.urls')),
+	path('admin/', admin.site.urls),
 	re_path('api/(?P<version>(v1|v2))/', include('airplane.urls')),
 ]

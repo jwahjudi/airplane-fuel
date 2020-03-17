@@ -11,8 +11,8 @@ class BaseViewTest(APITestCase):
     client = APIClient()
 
     @staticmethod
-    def create_airplane(airplane_id=-1, passengers=-1):
-        if airplane_id == -1 and passengers ==-1:
+    def create_airplane(airplane_id, passengers):
+        if airplane_id > 0 and passengers >= 0:
             Airplane.objects.create(airplane_id=airplane_id, passengers=passengers)
 
     def setUp(self):

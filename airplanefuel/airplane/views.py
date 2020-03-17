@@ -17,6 +17,6 @@ def airplane(request):
 	return HttpResponse("hello")
 
 def details(request, airplane_id):
-	airplane = get_object_or_404(Airplane, pk=airplane_id)
+	airplane = get_object_or_404(Airplane, pk=id)
 	return render(request, '')
 
