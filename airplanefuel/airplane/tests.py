@@ -21,6 +21,12 @@ class BaseViewTest(APITestCase):
         self.create_airplane(2, 2)
         self.create_airplane(3, 5)
         self.create_airplane(4, 2)
+        self.create_airplane(5, 10)
+        self.create_airplane(6, 3)
+        self.create_airplane(7, 7)
+        self.create_airplane(8, 10)
+        self.create_airplane(9, 13)
+        self.create_airplane(10, 9)
 
 
 class GetAllAirplanesTest(BaseViewTest):

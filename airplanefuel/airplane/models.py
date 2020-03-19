@@ -13,5 +13,9 @@ class Airplane(models.Model):
 		return (self.id * 0.8) + (self.passengers * 0.002)
 	consumption_per_min = property(count_consumption_per_min)
 
+	def max_flying_time(self):
+		return (self.id * 200)/((self.id * 0.8) + (self.passengers * 0.002))
+	max_flying_time = property(max_flying_time)
+
 	def __str__(self):
 		return str(self.id)

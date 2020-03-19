@@ -1,45 +1,41 @@
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 from .serializers import AirplaneSerializer
 from .models import Airplane
 
-def airplane_list(request):
-	if request.method =='GET':
-		airplane = Airplane.objects.all()
-		serializer = AirplaneSerializer(airplane, many=True)
-		return JsonResponse(serializer.data, safe=False)
-	elif request.method =='POST':
-		data = JSONParser().parse(request)
-		serializer = AirplaneSerializer(data=data)
-		if serializer.is_valid():
-			serializer.save()
-			return JsonResponse(serializer.data, status=201)
-		return JsonResponse(serializer.errors, status=400)
+class AirplaneList(generics.ListCreateAPIView):
+	queryset = Airplane.objects.all()
+	serializer_class = AirplaneSerializer
 
-def airplane_detail(request, pk):
-	try:
-		airplane = Airplane.objects.get(pk=pk)
-	except Airplane.DoesNotExist:
-		return HttpResponse(status=404)
-
-	if request.method =='GET':
-		serializer = AirplaneSerializer(airplane)
-		return JsonResponse(serializer.data)
-
-	elif request.method =='POST':
-		data = JSONParser().parse(request)
-		serializer = AirplaneSerializer(airplane, data=data)
-		if serializer.is_valid():
-			serializer.save()
-			return JsonResponse(serializer.data)
-		return JsonResponse(serializer.errors, status=400)
-
-	elif request.method == 'DELETE':
-		airplane.delete()
-		return HttpResponse(status=204)
+class AirplaneDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Airplane.objects.all()
+	serializer_class = AirplaneSerializer
 
 def airplane(request):
 	return HttpResponse("hello")
+
+@api_view(['GET'])
+def getConsumptionTime(request, pk):
+	try:
+		airplane = Airplane.objects.get(pk=pk)
+	except Airplane.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+	consumption_time = airplane.consumption_per_min
+	return Response({
+		"consumption_time_per_min": consumption_time
+	})
+
+@api_view(['GET'])
+def getMaxFlyingTime(request, pk):
+	try:
+		airplane = Airplane.objects.get(pk=pk)
+	except Airplane.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+	max_flying_time = airplane.max_flying_time
+	return Response({
+		"max_flying_time_per_min": max_flying_time
+	})
 
