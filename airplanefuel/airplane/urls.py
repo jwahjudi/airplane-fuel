@@ -1,13 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import renderers
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
 
-from . import views 
+from . import views
+
+router = DefaultRouter()
+router.register(r'airplane', views.AirplaneViewSet)
+
 
 urlpatterns = [
-	path('', views.airplane, name='airplane'),
-	path('airplane/', views.AirplaneList.as_view()),
-	path('airplane/<int:pk>/', views.AirplaneDetail.as_view()),
-	path('airplane/<int:pk>/getConsumptionTime', views.getConsumptionTime),
-	path('airplane/<int:pk>/getMaxFlyingTime', views.getMaxFlyingTime)
+	path('', include(router.urls)),
+	path('airplane/<int:pk>/getConsumptionTime/', views.getConsumptionTime),
+	path('airplane/<int:pk>/getMaxFlyingTime/', views.getMaxFlyingTime)
 ]
-urlpatterns = format_suffix_patterns(urlpatterns)

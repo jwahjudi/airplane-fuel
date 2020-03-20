@@ -1,43 +1,31 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase, APIClient
-from rest_framework.views import status
+from django.test import TestCase, Client
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
 from .models import Airplane
 from .serializers import AirplaneSerializer
 
-# tests for views
+client = Client()
 
+class GetAllAirplanes(TestCase):
+	def setUp(self):
+		Airplane.objects.create(id=1, passengers=1)
+		Airplane.objects.create(id=2, passengers=1)
+		Airplane.objects.create(id=3, passengers=1)
+		Airplane.objects.create(id=4, passengers=1)
+		Airplane.objects.create(id=5, passengers=1)
+		Airplane.objects.create(id=6, passengers=1)
+		Airplane.objects.create(id=7, passengers=1)
+		Airplane.objects.create(id=8, passengers=1)
+		Airplane.objects.create(id=9, passengers=1)
+		Airplane.objects.create(id=10, passengers=1)
 
-class BaseViewTest(APITestCase):
-    client = APIClient()
-
-    @staticmethod
-    def create_airplane(airplane_id, passengers):
-        if airplane_id > 0 and passengers >= 0:
-            Airplane.objects.create(airplane_id=airplane_id, passengers=passengers)
-
-    def setUp(self):
-        # add test data
-        self.create_airplane(1, 1)
-        self.create_airplane(2, 2)
-        self.create_airplane(3, 5)
-        self.create_airplane(4, 2)
-        self.create_airplane(5, 10)
-        self.create_airplane(6, 3)
-        self.create_airplane(7, 7)
-        self.create_airplane(8, 10)
-        self.create_airplane(9, 13)
-        self.create_airplane(10, 9)
-
-
-class GetAllAirplanesTest(BaseViewTest):
-
-    def test_get_all_planes(self):
-        # hit the API endpoint
-        response = self.client.get(
-            reverse("airplane-all", kwargs={"version": "v1"})
-        )
-        # fetch the data from db
-        expected = Airplane.objects.all()
-        serialized = AirplaneSerializer(expected, many=True)
-        self.assertEqual(response.data, serialized.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+	def test_get_all_airplanes(self):
+		response = client.get(reverse('airplanes'))
+		airplanes = Airplane.objects.all()
+		serializer = AirplaneSerializer(airplanes, many=True)
+		self.assertEqual(response.data, serializer.data)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+# Create your tests here.
